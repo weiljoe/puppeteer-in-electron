@@ -25,10 +25,6 @@ export const connect = async (app: App, puppeteer: puppeteer, port: number = 0) 
     throw new Error("The parameter 'puppeteer' was not passed in.");
   }
 
-  if (app.isReady()) {
-    throw new Error("Must be called at startup before the electron app is ready.");
-  }
-
   if (port < 0 || port > 65535) {
     throw new Error(`Invalid port ${port}.`);
   }
@@ -41,7 +37,9 @@ export const connect = async (app: App, puppeteer: puppeteer, port: number = 0) 
     `${port}`
   );
 
-  await app.whenReady;
+  if (!app.isReady()) {
+    await app.whenReady;
+  }
   const response = await retry(() => fetch(`http://127.0.0.1:${port}/json/version`));
   const json = await response.json();
 
