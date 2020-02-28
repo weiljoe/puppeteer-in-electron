@@ -1,5 +1,4 @@
 import fetch from "node-fetch";
-import findFreePort from "find-free-port-sync-fixed";
 import retry from "async-retry";
 import uuid from "uuid";
 
@@ -28,14 +27,6 @@ export const connect = async (app: App, puppeteer: puppeteer, port: number = 0) 
   if (port < 0 || port > 65535) {
     throw new Error(`Invalid port ${port}.`);
   }
-
-  // eslint-disable-next-line no-param-reassign
-  port = port || findFreePort();
-
-  app.commandLine.appendSwitch(
-    "remote-debugging-port",
-    `${port}`
-  );
 
   if (!app.isReady()) {
     await app.whenReady;
